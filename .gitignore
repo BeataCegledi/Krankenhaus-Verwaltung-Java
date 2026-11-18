@@ -1,0 +1,10 @@
+*.class
+bin/
+out/
+lib/
+*.jar
+.settings/
+.classpath
+.project
+.idea/
+*.iml
