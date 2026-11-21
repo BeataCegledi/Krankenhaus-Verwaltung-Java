@@ -8,3 +8,7 @@ lib/
 .project
 .idea/
 *.iml
+
+*.docx
+*.pdf
+TODO*.md
