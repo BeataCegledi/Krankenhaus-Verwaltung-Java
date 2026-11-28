@@ -5,23 +5,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import krankenhaus.model.PatientMitZimmer;
+import krankenhaus.model.PatientDTO;
 
 public class MemoryPatientRepository implements PatientRepository {
 
-	private final Map<String, PatientMitZimmer> daten = new HashMap<>();
+	private final Map<String, PatientDTO> daten = new HashMap<>();
 
 	@Override
-	public void speichern(PatientMitZimmer pmz) throws RepositoryException {
+	public void speichern(PatientDTO pmz) throws RepositoryException {
 		String id = pmz.patient().getPatientId();
 		if (daten.containsKey(id)) throw new RepositoryException("Patient-ID ist schon gespeichert.", null);
 		daten.put(id, pmz);
 	}
 
 	@Override
-	public void aendern(PatientMitZimmer pmz) {
-		String id = pmz.patient().getPatientId();
-		daten.put(id, pmz);
+	public void aendern(PatientDTO alt, PatientDTO neu) {
+		String id = neu.patient().getPatientId();
+		daten.put(id, neu);
 	}
 
 	@Override
@@ -30,7 +30,7 @@ public class MemoryPatientRepository implements PatientRepository {
 	}
 
 	@Override
-	public List<PatientMitZimmer> alleLaden() {
+	public List<PatientDTO> alleLaden() {
 		return new ArrayList<>(daten.values());
 	}
 }

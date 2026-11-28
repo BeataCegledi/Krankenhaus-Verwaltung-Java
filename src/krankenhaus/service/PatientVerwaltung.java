@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import krankenhaus.model.Patient;
-import krankenhaus.model.PatientMitZimmer;
+import krankenhaus.model.PatientDTO;
 import krankenhaus.model.PatientenHaus;
 import krankenhaus.model.Zimmer;
 import krankenhaus.repository.PatientRepository;
@@ -20,11 +20,9 @@ public class PatientVerwaltung {
 		this.repo = repo;
 	}
 
-	public PatientenHaus getHaus() {
-		return haus;
-	}
+	public PatientenHaus getHaus() { return haus; }
 
-	public void patientAnmelden(PatientMitZimmer pmz) throws IllegalArgumentException, RepositoryException {
+	public void patientAnmelden(PatientDTO pmz) throws IllegalArgumentException, RepositoryException {
 		haus.pruefeZimmer(pmz.zimmerNr());
 		doppelterPatient(pmz.patient().getPatientId());
 		repo.speichern(pmz);
@@ -37,10 +35,10 @@ public class PatientVerwaltung {
 				+ altZ.getPatient().getPatientId() + ") liegt schon in Zimmer " + altZ.getBezeichnung());
 	}
 
-	public void patientAendern(PatientMitZimmer alt, PatientMitZimmer neu)
+	public void patientAendern(PatientDTO alt, PatientDTO neu)
 			throws RepositoryException, IllegalArgumentException {
 		if (alt.zimmerNr() != neu.zimmerNr()) haus.pruefeZimmer(neu.zimmerNr());
-		repo.aendern(neu);
+		repo.aendern(alt, neu);
 		haus.loeschePatient(alt.zimmerNr());
 		haus.belege(neu.zimmerNr(), neu.patient());
 	}
@@ -53,7 +51,7 @@ public class PatientVerwaltung {
 	}
 
 	public void alleLaden() throws RepositoryException, IllegalArgumentException {
-		for (PatientMitZimmer pz : repo.alleLaden()) {
+		for (PatientDTO pz : repo.alleLaden()) {
 			doppelterPatient(pz.patient().getPatientId());
 			haus.belege(pz.zimmerNr(), pz.patient());
 		}

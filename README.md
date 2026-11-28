@@ -11,7 +11,7 @@ Das Krankenhaus wird als Raster aus Etagen und Zimmern dargestellt (Standard: 4 
 
 | Package | Inhalt | Aufgabe |
 |---|---|---|
-| `krankenhaus.model` | `Patient`, `Zimmer`, `PatientenHaus`, `Abteilung`, `Geschlecht`, `PatientMitZimmer`, `ZimmerAenderung`, `ZimmerObserver` | Daten und Regeln, kennt weder GUI noch Datenbank |
+| `krankenhaus.model` | `Patient`, `Zimmer`, `PatientenHaus`, `Abteilung`, `Geschlecht`, `PatientDTO`, `ZimmerAenderung`, `ZimmerObserver` | Daten und Regeln, kennt weder GUI noch Datenbank |
 | `krankenhaus.service` | `PatientVerwaltung` | Ablauf: prüfen → speichern → Modell ändern |
 | `krankenhaus.repository` | `PatientRepository`, `MySqlPatientRepository`, `MemoryPatientRepository`, `RepositoryException` | Speicherung; nur hier kommt `java.sql` vor |
 | `krankenhaus.view` | `MatrixPanel`, `ZimmerButton`, `PatientFormular`, `ZimmerKlickListener` | Swing-Oberfläche |
@@ -74,7 +74,7 @@ Alle Fehler eines Formulars werden gesammelt und zusammen in einem Dialog angeze
 | Eigenes funktionales Interface | `ZimmerKlickListener`, als Methodenreferenz `this::zimmerGeklickt` übergeben |
 | JDBC mit `PreparedStatement` | Platzhalter `?` statt Stringverkettung, damit keine SQL-Injection möglich ist |
 | try-with-resources | `Connection`, `PreparedStatement` und `ResultSet` werden automatisch geschlossen |
-| `record` | `PatientMitZimmer`, `ZimmerAenderung` |
+| `record` | `PatientDTO`, `ZimmerAenderung` |
 | `enum` mit Feldern | `Abteilung` (Anzeigename, Kürzel, Etage, `fromEtage`), `Geschlecht`, `SpeicherArt` |
 | `switch`-Ausdruck | Auswahl des Repositorys in der Factory, Optionsdialog beim Zimmerklick |
 | Kapselung | `Zimmer.belege` nur package-private → Änderungen nur über `PatientenHaus`; `getAlleZimmer()` als `unmodifiableCollection`; `Patient` unveränderlich (`final`-Felder) |

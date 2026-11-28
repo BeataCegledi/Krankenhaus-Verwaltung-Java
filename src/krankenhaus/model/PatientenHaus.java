@@ -21,14 +21,15 @@ public class PatientenHaus {
 			throw new IllegalArgumentException("Ungültige Zimmerzahl für die Etage! Sie soll zwischen 1 und 99 liegen!");
 		this.anzahlEtagen = anzahlEtagen;
 		this.zimmerAnzahl = zimmerProEtage;
+		int zimmerNr;
 		for (int i = 1; i <= anzahlEtagen; i++) {
 			for (int j = 1; j <= zimmerProEtage; j++) {
-				int zimmerNr = i * 100 + j;
+				zimmerNr = Zimmer.berechneZimmerNr(i, j);
 				zimmerList.put(zimmerNr, new Zimmer(zimmerNr));
 			}
 		}
 	}
-
+	
 	public void addObserver(ZimmerObserver observer) {
 		observerList.add(observer);
 	}

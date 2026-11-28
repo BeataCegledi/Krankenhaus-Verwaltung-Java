@@ -16,7 +16,7 @@ public class KrankenhausFactory {
 			throws RepositoryException {
 		PatientenHaus haus = new PatientenHaus(anzahlEtagen, zimmerProEtage);
 		PatientRepository repo = switch (art) {
-			case MYSQL -> new MySqlPatientRepository();
+			case MYSQL -> new MySqlPatientRepository(haus.getAlleZimmer());
 			case MEMORY -> new MemoryPatientRepository();
 		};
 		return new PatientVerwaltung(haus, repo);

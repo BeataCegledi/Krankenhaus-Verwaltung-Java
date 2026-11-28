@@ -16,6 +16,10 @@ public class Zimmer {
 	public int getZimmerNr() {
 		return zimmerNr;
 	}
+	
+	public static int berechneZimmerNr(int etage, int nrAufEtage) {
+		return etage * 100 + nrAufEtage;
+	}
 
 	public int getEtage() {
 		return zimmerNr / 100;

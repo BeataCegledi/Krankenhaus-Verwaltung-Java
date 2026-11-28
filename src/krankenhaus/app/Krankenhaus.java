@@ -9,7 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
 
-import krankenhaus.model.PatientMitZimmer;
+import krankenhaus.model.PatientDTO;
 import krankenhaus.model.PatientenHaus;
 import krankenhaus.model.Zimmer;
 import krankenhaus.repository.RepositoryException;
@@ -83,7 +83,7 @@ public class Krankenhaus extends JFrame {
 
 	private void aendern(Zimmer z) {
 		if (z != null) {
-			PatientMitZimmer pmzAlt = new PatientMitZimmer(z.getEtage(), z.getNrAufEtage(), z.getPatient());
+			PatientDTO pmzAlt = new PatientDTO(z.getZimmerNr(), z.getPatient());
 			PatientFormular formular = new PatientFormular(verwaltung.freieZimmer(), pmzAlt);
 			frageBogen("Patientdaten ändern", formular);
 		}
@@ -93,8 +93,11 @@ public class Krankenhaus extends JFrame {
 		if (z != null) {
 			try {
 				int antwort = JOptionPane.showConfirmDialog(this,
-						"Patient " + z.getPatient().getName() + " wirklich entlassen und endgültig löschen?",
+						"Patient " + z.getPatient().getName() + " wirklich entlassen? Der Patient bleibt für eine mögliche Wiederaufnahme gespeichert.",
 						"Sicherheitsfrage", JOptionPane.YES_NO_OPTION);
+				// Zurückgestellt: alte Formulierung „endgültig löschen?“;
+				// vorgesehene neue Formulierung: Patient bleibt für Wiederaufnahme gespeichert.
+
 				if (antwort == JOptionPane.YES_OPTION) verwaltung.patientEntlassen(z.getZimmerNr());
 			} catch (RepositoryException ex) {
 				zeigeFehler(this, "Datenbankfehler", "Entlassen fehlgeschlagen: " + ex.getMessage());
@@ -123,8 +126,8 @@ public class Krankenhaus extends JFrame {
 			int antwort = JOptionPane.showConfirmDialog(this, formular, title, JOptionPane.OK_CANCEL_OPTION);
 			if (antwort != JOptionPane.OK_OPTION) return;
 			try {
-				PatientMitZimmer alt = formular.getPmz();
-				PatientMitZimmer neu = formular.getPatientMitZimmer();
+				PatientDTO alt = formular.getPmz();
+				PatientDTO neu = formular.getPatientMitZimmer();
 				if (alt == null) verwaltung.patientAnmelden(neu);
 				else verwaltung.patientAendern(alt, neu);
 				return;

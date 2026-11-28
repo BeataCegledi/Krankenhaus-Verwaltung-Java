@@ -17,7 +17,7 @@ import com.github.lgooddatepicker.components.DatePicker;
 
 import krankenhaus.model.Geschlecht;
 import krankenhaus.model.Patient;
-import krankenhaus.model.PatientMitZimmer;
+import krankenhaus.model.PatientDTO;
 import krankenhaus.model.Zimmer;
 
 public class PatientFormular extends JPanel {
@@ -35,9 +35,10 @@ public class PatientFormular extends JPanel {
 	private JComboBox<Integer> zimmerBox;
 	private List<Zimmer> freieZimmer;
 	private JLabel hinweisLabel;
-	private PatientMitZimmer pmz;
+	private PatientDTO pmz;
 
-	public PatientFormular(List<Zimmer> freieZList, PatientMitZimmer pmz) throws IllegalArgumentException {
+
+	public PatientFormular(List<Zimmer> freieZList, PatientDTO pmz) throws IllegalArgumentException {
 		this(freieZList);
 		if (pmz == null) throw new IllegalArgumentException(
 				"Für Änderungen wird ein vorhandener Patient benötigt, und darf nicht null sein");
@@ -72,6 +73,10 @@ public class PatientFormular extends JPanel {
 		etageBox.setSelectedIndex(-1);
 		zimmerBox.setEnabled(false);
 		etageBox.addActionListener(e -> zimmerNeuLaden());
+	}
+	
+	public PatientDTO getPmz() {
+		return pmz;
 	}
 
 	private void initGUI() {
@@ -118,8 +123,8 @@ public class PatientFormular extends JPanel {
 	}
 
 	private String grundHinweis() {
-		return getPmz() == null ? " "
-				: "Aktuell: E" + getPmz().etage() + " / Z" + getPmz().zimmer() + " – leer lassen = bleibt";
+		return pmz == null ? " "
+				: "Aktuell: Zimmer " + pmz.zimmerNr() + " – leer lassen = bleibt";
 	}
 
 	private void zimmerNeuLaden() {
@@ -139,7 +144,7 @@ public class PatientFormular extends JPanel {
 		hinweisLabel.setText(frei ? grundHinweis() : "Auf dieser Etage ist kein Zimmer frei.");
 	}
 
-	public PatientMitZimmer getPatientMitZimmer() throws IllegalArgumentException {
+	public PatientDTO getPatientMitZimmer() throws IllegalArgumentException {
 		StringBuilder fehler = new StringBuilder();
 
 		String patientId = idField.getText().strip();
@@ -155,7 +160,7 @@ public class PatientFormular extends JPanel {
 
 		LocalDate geb = geburtsDatum.getDate();
 		LocalDate heute = LocalDate.now();
-		if (getPmz() == null) {
+		if (pmz == null) {
 			if (geb == null) fehler.append("Geburtsdatum fehlt!\n");
 			else if (geb.isAfter(heute.minusYears(MIN_ALTER)))
 				fehler.append("Geburtsdatum prüfen, wir empfangen nur Patienten ab 14 Jahre!\n");
@@ -168,23 +173,22 @@ public class PatientFormular extends JPanel {
 		int etageIndex = etageBox.getSelectedIndex();
 		int zimmer = 0;
 		int zimmerIndex = zimmerBox.getSelectedIndex();
-		boolean zimmerBleibt = getPmz() != null && etageIndex == -1;
+		boolean zimmerBleibt = pmz != null && etageIndex == -1;
+		int zimmerNr;
 		if (zimmerBleibt) {
-			etage = getPmz().etage();
-			zimmer = getPmz().zimmer();
+			zimmerNr = pmz.zimmerNr();
 		} else {
 			if (etageIndex == -1) fehler.append("Bitte eine Etage wählen!\n");
 			else etage = etageBox.getItemAt(etageIndex);
 			if (zimmerIndex == -1) fehler.append("Bitte ein Zimmer wählen!\n");
 			else zimmer = zimmerBox.getItemAt(zimmerIndex);
+			zimmerNr = Zimmer.berechneZimmerNr(etage, zimmer);
 		}
 
-		LocalDate aufnahme = getPmz() == null ? LocalDate.now() : getPmz().patient().getAufnahmeDatum();
+		LocalDate aufnahme = pmz == null ? LocalDate.now() : pmz.patient().getAufnahmeDatum();
 		if (!fehler.isEmpty()) throw new IllegalArgumentException(fehler.toString());
-		return new PatientMitZimmer(etage, zimmer, new Patient(patientId, name, diagnose, geb, geschlecht, aufnahme));
+		return new PatientDTO(zimmerNr, new Patient(patientId, name, diagnose, geb, geschlecht, aufnahme));
 	}
 
-	public PatientMitZimmer getPmz() {
-		return pmz;
-	}
+
 }

@@ -25,6 +25,14 @@ public enum Abteilung {
 		return kuerzel;
 	}
 
+	public String getAnzeigeName() {
+		return anzeigeName;
+	}
+
+	public int getEtage() {
+		return etage;
+	}
+
 	@Override
 	public String toString() {
 		return anzeigeName;
