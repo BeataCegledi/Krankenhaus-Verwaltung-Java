@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import krankenhaus.model.Abteilung;
 import krankenhaus.model.Geschlecht;
@@ -160,7 +161,7 @@ public final class MySqlPatientRepository implements PatientRepository {
 					aenderungSchreiben(con, neu.patient().getPatientId(), "NAME",
 							alt.patient().getName(), neu.patient().getName());
 				}
-				if (!alt.patient().getKrankheit().equals(neu.patient().getKrankheit())) {
+				if (!Objects.equals(alt.patient().getKrankheit(), neu.patient().getKrankheit())) {
 					try (PreparedStatement ps = con.prepareStatement(
 							"UPDATE aktuell SET krankheit = ? WHERE patientID = ?")) {
 						ps.setString(1, neu.patient().getKrankheit());
